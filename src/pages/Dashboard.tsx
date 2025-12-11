@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { VehiclesTable } from "@/components/dashboard/VehiclesTable";
@@ -5,15 +6,18 @@ import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { Button } from "@/components/ui/button";
 import { Map } from "lucide-react";
 import { vehiclesNeedingCharge, alerts } from "@/data/mockData";
+import { FleetMapPanel } from "@/components/fleet-map/FleetMapPanel";
 
 export default function Dashboard() {
+  const [mapOpen, setMapOpen] = useState(false);
+  
   return (
     <AppLayout breadcrumb={[{ label: "Fleet", path: "/" }, { label: "Dashboard" }]}>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Fleet dashboard</h1>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => setMapOpen(true)}>
             <Map className="h-4 w-4" />
             View Fleet Map
           </Button>
@@ -58,6 +62,8 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      
+      <FleetMapPanel isOpen={mapOpen} onClose={() => setMapOpen(false)} />
     </AppLayout>
   );
 }
