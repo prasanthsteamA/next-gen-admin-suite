@@ -9,6 +9,7 @@ interface DraggableScheduleGridProps {
   sessions: ScheduleSession[];
   timeSlots: string[];
   onSessionMove?: (sessionId: string, newVehicleId: string, newTimeSlotIndex: number) => void;
+  onEmptyCellClick?: (vehicleId: string, vehicleVrn: string, timeSlot: string, timeSlotIndex: number) => void;
 }
 
 interface DragItem {
@@ -21,7 +22,8 @@ export function DraggableScheduleGrid({
   vehicles, 
   sessions, 
   timeSlots,
-  onSessionMove 
+  onSessionMove,
+  onEmptyCellClick
 }: DraggableScheduleGridProps) {
   const [draggedItem, setDraggedItem] = useState<DragItem | null>(null);
   const [dropTarget, setDropTarget] = useState<{ vehicleId: string; timeSlotIndex: number } | null>(null);
@@ -131,11 +133,16 @@ export function DraggableScheduleGrid({
                       className={cn(
                         "p-1 relative h-20 border-l border-border/50 transition-colors",
                         isDropTarget && "bg-primary/10",
-                        !session && "hover:bg-muted/30"
+                        !session && "hover:bg-muted/30 cursor-pointer"
                       )}
                       onDragOver={(e) => handleDragOver(e, vehicle.id, idx)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, vehicle.id, idx)}
+                      onClick={() => {
+                        if (!session) {
+                          onEmptyCellClick?.(vehicle.id, vehicle.vrn, time, idx);
+                        }
+                      }}
                     >
                       {session && (
                         <div 
