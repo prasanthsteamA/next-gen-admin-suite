@@ -41,8 +41,11 @@ export const chargingHubs: ChargingHub[] = [
 ];
 
 export const scheduleSessions: ScheduleSession[] = [
-  { id: "s1", vehicleId: "4", location: "Coimbatore Hub", connector: "Connector 6", startTime: "14:30", duration: "1h 30m", startSoc: 67, endSoc: 90, power: "60 kW", type: "dc", status: "scheduled" },
-  { id: "s2", vehicleId: "5", location: "Coimbatore Hub", connector: "Connector 3", startTime: "14:15", duration: "45m", startSoc: 46, endSoc: 65, power: "22 kW", type: "ac", status: "scheduled" },
-  { id: "s3", vehicleId: "6", location: "Coimbatore Hub", connector: "Connector 6", startTime: "16:00", duration: "2h", startSoc: 67, endSoc: 90, power: "60 kW", type: "dc", status: "scheduled" },
+  { id: "s1", vehicleId: "4", location: "Coimbatore Hub", connector: "Connector 6", startTime: "15:00", duration: "1h 30m", startSoc: 67, endSoc: 90, power: "60 kW", type: "dc", status: "scheduled" },
+  { id: "s2", vehicleId: "5", location: "Coimbatore Hub", connector: "Connector 3", startTime: "14:00", duration: "45m", startSoc: 46, endSoc: 65, power: "22 kW", type: "ac", status: "scheduled" },
+  { id: "s3", vehicleId: "6", location: "Industrial Zone Hub", connector: "Connector 2", startTime: "16:00", duration: "2h", startSoc: 67, endSoc: 90, power: "60 kW", type: "dc", status: "scheduled" },
   { id: "s4", vehicleId: "7", location: "Airport Logistics Depot", connector: "Connector 7", startTime: "17:00", duration: "2h 30m", startSoc: 36, endSoc: 88, power: "75 kW", type: "dc", status: "scheduled" },
+  { id: "s5", vehicleId: "1", location: "North Ring Road Hub", connector: "Connector 1", startTime: "18:00", duration: "1h", startSoc: 85, endSoc: 100, power: "22 kW", type: "ac", status: "scheduled" },
+  { id: "s6", vehicleId: "8", location: "Coimbatore Hub", connector: "Connector 4", startTime: "19:00", duration: "2h", startSoc: 42, endSoc: 85, power: "60 kW", type: "dc", status: "scheduled" },
+  { id: "s7", vehicleId: "10", location: "City Center Yard", connector: "Connector 2", startTime: "20:00", duration: "3h", startSoc: 34, endSoc: 80, power: "22 kW", type: "ac", status: "scheduled" },
 ];
