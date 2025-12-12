@@ -8,8 +8,9 @@ interface HeaderProps {
 
 export function Header({ breadcrumb }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card px-6">
-      <div className="flex items-center gap-6">
+    <header className="sticky top-0 z-30">
+      {/* Top bar with logos and user */}
+      <div className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
@@ -27,7 +28,22 @@ export function Header({ breadcrumb }: HeaderProps) {
           <span className="text-sm text-primary align-super">fleet</span>
         </div>
 
-        {/* Breadcrumb */}
+        {/* User */}
+        <div className="flex items-center gap-3">
+          <div className="text-right">
+            <p className="text-sm font-medium text-foreground">Alex Johnson</p>
+            <p className="text-xs text-muted-foreground">Fleet Manager</p>
+          </div>
+          <Avatar className="h-9 w-9 bg-info">
+            <AvatarFallback className="bg-info text-info-foreground text-sm font-medium">
+              AJ
+            </AvatarFallback>
+          </Avatar>
+        </div>
+      </div>
+
+      {/* Breadcrumb bar - positioned below the main header */}
+      <div className="flex h-10 items-center bg-muted/50 border-b border-border px-6">
         <nav className="flex items-center gap-2 text-sm">
           <Link to="/" className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
             <ChevronLeft className="h-4 w-4" />
@@ -45,19 +61,6 @@ export function Header({ breadcrumb }: HeaderProps) {
             </div>
           ))}
         </nav>
-      </div>
-
-      {/* User */}
-      <div className="flex items-center gap-3">
-        <div className="text-right">
-          <p className="text-sm font-medium text-foreground">Alex Johnson</p>
-          <p className="text-xs text-muted-foreground">Fleet Manager</p>
-        </div>
-        <Avatar className="h-9 w-9 bg-info">
-          <AvatarFallback className="bg-info text-info-foreground text-sm font-medium">
-            AJ
-          </AvatarFallback>
-        </Avatar>
       </div>
     </header>
   );
