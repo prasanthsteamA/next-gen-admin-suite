@@ -17,7 +17,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-foreground">Fleet dashboard</h1>
-          <Button className="gap-2" onClick={() => setMapOpen(true)}>
+          <Button className="gap-2 bg-success hover:bg-success/90 text-success-foreground" onClick={() => setMapOpen(true)}>
             <Map className="h-4 w-4" />
             View Fleet Map
           </Button>
