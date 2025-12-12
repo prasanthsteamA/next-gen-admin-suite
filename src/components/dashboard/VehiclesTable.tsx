@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Vehicle } from "@/types/fleet";
 import { SocBadge } from "./SocBadge";
 import { RiskBadge } from "./RiskBadge";
+import { TablePagination } from "@/components/ui/TablePagination";
 import { MapPin, Filter } from "lucide-react";
 import {
   Table,
@@ -19,6 +21,13 @@ interface VehiclesTableProps {
 }
 
 export function VehiclesTable({ vehicles, title, showViewAll, compact }: VehiclesTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  
+  const totalPages = Math.ceil(vehicles.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedVehicles = vehicles.slice(startIndex, startIndex + pageSize);
+
   return (
     <div className="bg-card rounded-lg border border-border">
       {(title || showViewAll) && (
@@ -64,7 +73,7 @@ export function VehiclesTable({ vehicles, title, showViewAll, compact }: Vehicle
             </TableRow>
           </TableHeader>
           <TableBody>
-            {vehicles.map((vehicle) => (
+            {paginatedVehicles.map((vehicle) => (
               <TableRow key={vehicle.id} className="hover:bg-muted/50">
                 <TableCell className="font-medium">{vehicle.vrn}</TableCell>
                 <TableCell>{vehicle.name}</TableCell>
@@ -80,7 +89,7 @@ export function VehiclesTable({ vehicles, title, showViewAll, compact }: Vehicle
                   <RiskBadge level={vehicle.soc < 30 ? "high" : vehicle.soc < 50 ? "medium" : "low"} />
                 </TableCell>
                 <TableCell>
-                  <button className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium">
+                  <button className="flex items-center gap-1 text-sm text-info hover:text-info/80 font-medium">
                     <MapPin className="h-4 w-4" />
                     Locate
                   </button>
@@ -90,11 +99,13 @@ export function VehiclesTable({ vehicles, title, showViewAll, compact }: Vehicle
           </TableBody>
         </Table>
       </div>
-      <div className="px-4 py-2 border-t border-border flex justify-center">
-        <button className="text-sm text-muted-foreground hover:text-foreground">
-          &lt; 1 &gt;
-        </button>
-      </div>
+      <TablePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={(size) => { setPageSize(size); setCurrentPage(1); }}
+      />
     </div>
   );
 }

@@ -25,12 +25,12 @@ export function Sidebar() {
   const location = useLocation();
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-16 bg-sidebar flex flex-col">
-      <div className="flex h-16 items-center justify-center border-b border-sidebar-border">
-        <Menu className="h-6 w-6 text-sidebar-foreground" />
+    <aside className="fixed left-0 top-0 z-40 h-screen w-16 bg-sidebar flex flex-col border-r border-sidebar-border">
+      <div className="flex h-16 items-center justify-center">
+        <Menu className="h-6 w-6 text-sidebar-foreground cursor-pointer hover:text-sidebar-foreground/80" />
       </div>
       
-      <nav className="flex-1 py-4">
+      <nav className="flex-1 py-2">
         <ul className="space-y-1 px-2">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path || 
@@ -41,9 +41,9 @@ export function Sidebar() {
                 <Link
                   to={item.path}
                   className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-lg transition-all duration-200",
+                    "flex h-11 w-11 items-center justify-center rounded-lg transition-all duration-200",
                     isActive
-                      ? "bg-sidebar-active text-sidebar-foreground"
+                      ? "bg-primary text-primary-foreground"
                       : "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                   )}
                   title={item.label}
