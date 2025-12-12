@@ -1,27 +1,39 @@
 import { Vehicle, Alert, ChargingHub, ScheduleSession } from "@/types/fleet";
 
-export const vehicles: Vehicle[] = [
-  { id: "1", vrn: "VEH-001", name: "Fleet Tata Ace EV", make: "Tata Motors", model: "Ace EV", soc: 85, target: 85, depot: "Coimbatore Hub", location: "Saibaba Colony", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3513 },
-  { id: "2", vrn: "VEH-002", name: "Fleet Tata Ultra T.7", make: "Tata Motors", model: "Ultra T.7 Electric", soc: 80, target: 90, depot: "Airport Logistics Depot", location: "Town Hall", priority: "medium", nextDispatch: "high priority", avgCostPerDay: 3514 },
-  { id: "3", vrn: "VEH-003", name: "Fleet Mahindra XUV400", make: "Mahindra", model: "XUV400", soc: 88, target: 80, depot: "North Ring Road Hub", location: "Race Course", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3515 },
-  { id: "4", vrn: "VEH-004", name: "Fleet Mahindra eVerito", make: "Mahindra", model: "eVerito Fleet", soc: 82, target: 90, depot: "Coimbatore Hub", location: "Ganapathy", priority: "medium", nextDispatch: "high priority", avgCostPerDay: 3516 },
-  { id: "5", vrn: "VEH-005", name: "Fleet XPRES-T EV", make: "Tata Motors", model: "XPRES-T EV", soc: 46, target: 85, depot: "City Center Overnight Yard", location: "Singanallur", priority: "low", nextDispatch: "high priority", avgCostPerDay: 3517 },
-  { id: "6", vrn: "VEH-006", name: "Fleet BYD e6", make: "BYD", model: "e6 MPV", soc: 67, target: 90, depot: "Industrial Zone Hub", location: "Ukkadam", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3518 },
-  { id: "7", vrn: "VEH-007", name: "Fleet Eicher Pro", make: "Eicher", model: "Pro 2055 EV", soc: 36, target: 88, depot: "Airport Logistics Depot", location: "Saravanampatti", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3519 },
-  { id: "8", vrn: "VEH-008", name: "Fleet Tata Ace EV 2", make: "Tata Motors", model: "Ace EV", soc: 42, target: 85, depot: "Coimbatore Hub", location: "Gandhipuram", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3520 },
-  { id: "9", vrn: "VEH-009", name: "Fleet Ultra T.7 2", make: "Tata Motors", model: "Ultra T.7 Electric", soc: 53, target: 90, depot: "Airport Logistics Depot", location: "RS Puram", priority: "medium", nextDispatch: "high priority", avgCostPerDay: 3521 },
-  { id: "10", vrn: "VEH-010", name: "Fleet Mahindra XUV400 2", make: "Mahindra", model: "XUV400", soc: 34, target: 80, depot: "North Ring Road Hub", location: "Saibaba Colony", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3513 },
-  { id: "11", vrn: "VEH-011", name: "Fleet Mahindra eVerito 2", make: "Mahindra", model: "eVerito Fleet", soc: 65, target: 90, depot: "Coimbatore Hub", location: "Town Hall", priority: "medium", nextDispatch: "high priority", avgCostPerDay: 3514 },
-  { id: "12", vrn: "VEH-012", name: "Fleet XPRES-T EV 2", make: "Tata Motors", model: "XPRES-T EV", soc: 53, target: 85, depot: "City Center Overnight Yard", location: "Race Course", priority: "low", nextDispatch: "high priority", avgCostPerDay: 3515 },
-];
+const makes = ['Tata Motors', 'Mahindra', 'BYD', 'Eicher'];
+const models = ['Ace EV', 'Ultra T.7 Electric', 'XUV400', 'eVerito Fleet', 'XPRES-T EV', 'e6 MPV', 'Pro 2055 EV'];
+const depots = ['Coimbatore Hub', 'Airport Logistics Depot', 'Industrial Zone Hub', 'City Center Overnight Yard', 'North Ring Road Hub'];
+const locations = ['Saibaba Colony', 'Town Hall', 'Race Course', 'Ganapathy', 'Singanallur', 'Ukkadam', 'Saravanampatti', 'Gandhipuram', 'RS Puram', 'Peelamedu'];
+const priorities: ('high' | 'medium' | 'low')[] = ['high', 'medium', 'low'];
 
-export const vehiclesNeedingCharge: Vehicle[] = [
-  { id: "v1", vrn: "VEH-052", name: "Fleet Mahindra XUV400", make: "Mahindra", model: "XUV400", soc: 18, target: 80, depot: "North Ring Road Hub", location: "Saravanampatti", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3500 },
-  { id: "v2", vrn: "VEH-051", name: "Fleet Tata Ultra T.7", make: "Tata Motors", model: "Ultra T.7 Electric", soc: 22, target: 90, depot: "Airport Logistics Depot", location: "Ukkadam", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3500 },
-  { id: "v3", vrn: "VEH-053", name: "Fleet Mahindra eVerito", make: "Mahindra", model: "eVerito Fleet", soc: 25, target: 90, depot: "Coimbatore Hub", location: "Gandhipuram", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3500 },
-  { id: "v4", vrn: "VEH-024", name: "Fleet Mahindra XUV400", make: "Mahindra", model: "XUV400", soc: 28, target: 80, depot: "North Ring Road Hub", location: "Ukkadam", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3500 },
-  { id: "v5", vrn: "VEH-045", name: "Fleet Mahindra XUV400", make: "Mahindra", model: "XUV400", soc: 29, target: 80, depot: "North Ring Road Hub", location: "RS Puram", priority: "high", nextDispatch: "high priority", avgCostPerDay: 3500 },
-];
+// Generate 60 vehicles
+export const vehicles: Vehicle[] = Array.from({ length: 60 }, (_, i) => {
+  const id = String(i + 1);
+  const vrn = `VEH-${String(i + 1).padStart(3, '0')}`;
+  const makeIdx = i % makes.length;
+  const modelIdx = i % models.length;
+  const depotIdx = i % depots.length;
+  const locationIdx = i % locations.length;
+  const priorityIdx = i % priorities.length;
+  const soc = Math.floor(Math.random() * 70) + 30;
+  
+  return {
+    id,
+    vrn,
+    name: `Fleet ${makes[makeIdx]} ${models[modelIdx].split(' ')[0]}`,
+    make: makes[makeIdx],
+    model: models[modelIdx],
+    soc,
+    target: [80, 85, 88, 90][i % 4],
+    depot: depots[depotIdx],
+    location: locations[locationIdx],
+    priority: priorities[priorityIdx],
+    nextDispatch: 'high priority',
+    avgCostPerDay: 3513 + (i % 10),
+  };
+});
+
+export const vehiclesNeedingCharge: Vehicle[] = vehicles.filter(v => v.soc < 50).slice(0, 5);
 
 export const alerts: Alert[] = [
   { id: "a1", type: "critical", message: "Vehicle Car 492 SOC critically low (25%) - may miss next dispatch", time: "5m ago" },

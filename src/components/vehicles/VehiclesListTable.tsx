@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Vehicle } from "@/types/fleet";
 import { SocBadge } from "@/components/dashboard/SocBadge";
 import { RiskBadge } from "@/components/dashboard/RiskBadge";
+import { TablePagination } from "@/components/ui/TablePagination";
 import { MapPin, Zap, ArrowUpDown, Filter } from "lucide-react";
 import {
   Table,
@@ -18,6 +20,22 @@ interface VehiclesListTableProps {
 }
 
 export function VehiclesListTable({ vehicles, onChargeNow, onLocate }: VehiclesListTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  
+  const totalPages = Math.ceil(vehicles.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedVehicles = vehicles.slice(startIndex, startIndex + pageSize);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="bg-card rounded-lg border border-border">
       <div className="overflow-x-auto">
@@ -70,7 +88,7 @@ export function VehiclesListTable({ vehicles, onChargeNow, onLocate }: VehiclesL
             </TableRow>
           </TableHeader>
           <TableBody>
-            {vehicles.map((vehicle) => (
+            {paginatedVehicles.map((vehicle) => (
               <TableRow key={vehicle.id} className="hover:bg-muted/50">
                 <TableCell className="font-medium">{vehicle.vrn}</TableCell>
                 <TableCell>{vehicle.make}</TableCell>
@@ -105,7 +123,7 @@ export function VehiclesListTable({ vehicles, onChargeNow, onLocate }: VehiclesL
                     </button>
                     <button 
                       onClick={() => onLocate(vehicle)}
-                      className="flex items-center gap-1 text-sm text-primary hover:text-primary/80 font-medium"
+                      className="flex items-center gap-1 text-sm text-info hover:text-info/80 font-medium"
                     >
                       <MapPin className="h-4 w-4" />
                       Locate
@@ -117,6 +135,13 @@ export function VehiclesListTable({ vehicles, onChargeNow, onLocate }: VehiclesL
           </TableBody>
         </Table>
       </div>
+      <TablePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pageSize={pageSize}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+      />
     </div>
   );
 }
