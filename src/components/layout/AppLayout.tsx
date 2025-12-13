@@ -9,11 +9,14 @@ interface AppLayoutProps {
 
 export function AppLayout({ children, breadcrumb }: AppLayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
-      <Sidebar />
-      <div className="ml-16">
-        <Header breadcrumb={breadcrumb} />
-        <main className="p-6">{children}</main>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header spans full width at top */}
+      <Header breadcrumb={breadcrumb} />
+      
+      {/* Below header: sidebar + main content */}
+      <div className="flex flex-1">
+        <Sidebar />
+        <main className="flex-1 ml-16 p-6">{children}</main>
       </div>
     </div>
   );

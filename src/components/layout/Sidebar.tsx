@@ -25,11 +25,7 @@ export function Sidebar() {
   const location = useLocation();
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-16 bg-sidebar flex flex-col border-r border-sidebar-border">
-      <div className="flex h-16 items-center justify-center">
-        <Menu className="h-6 w-6 text-sidebar-foreground cursor-pointer hover:text-sidebar-foreground/80" />
-      </div>
-      
+    <aside className="fixed left-0 top-[104px] z-40 h-[calc(100vh-104px)] w-16 bg-sidebar flex flex-col border-r border-sidebar-border">
       <nav className="flex-1 py-2">
         <ul className="space-y-1 px-2">
           {navItems.map((item) => {
