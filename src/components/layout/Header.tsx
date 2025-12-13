@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -8,11 +8,12 @@ interface HeaderProps {
 
 export function Header({ breadcrumb }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30">
-      {/* Top bar with logos and user */}
-      <div className="flex h-16 items-center justify-between border-b border-border bg-card px-6">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
+    <header className="sticky top-0 z-50 w-full">
+      {/* Top bar with menu, logos and user - full width */}
+      <div className="flex h-16 items-center justify-between border-b border-border bg-card px-4">
+        {/* Left: Menu + Logo */}
+        <div className="flex items-center gap-4">
+          <Menu className="h-6 w-6 text-muted-foreground cursor-pointer hover:text-foreground" />
           <div className="flex items-center gap-1">
             <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
               <span className="text-xs font-bold text-primary-foreground">bp</span>
@@ -42,8 +43,8 @@ export function Header({ breadcrumb }: HeaderProps) {
         </div>
       </div>
 
-      {/* Breadcrumb bar - positioned below the main header */}
-      <div className="flex h-10 items-center bg-muted/50 border-b border-border px-6">
+      {/* Breadcrumb bar - light background, full width */}
+      <div className="flex h-10 items-center bg-muted/50 border-b border-border px-4">
         <nav className="flex items-center gap-2 text-sm">
           <Link to="/" className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
             <ChevronLeft className="h-4 w-4" />
