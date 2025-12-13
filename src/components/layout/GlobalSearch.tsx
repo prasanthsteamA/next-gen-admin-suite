@@ -13,6 +13,36 @@ interface SearchResult {
   path: string;
 }
 
+// Highlight matched text in search results
+function HighlightText({ text, query }: { text: string; query: string }) {
+  if (!query.trim()) return <>{text}</>;
+  
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escapedQuery})`, 'gi');
+  const parts = text.split(regex);
+  
+  return (
+    <>
+      {parts.map((part, i) => 
+        part.toLowerCase() === query.toLowerCase() ? (
+          <span key={i} className="bg-primary/20 text-primary font-semibold">{part}</span>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  );
+}
+
+// Unique depot list for searching
+const depotList = [
+  { id: "d1", name: "Coimbatore Hub", location: "Coimbatore City" },
+  { id: "d2", name: "Airport Logistics Depot", location: "Airport Area" },
+  { id: "d3", name: "Industrial Zone Hub", location: "Industrial Area" },
+  { id: "d4", name: "City Center Overnight Yard", location: "City Center" },
+  { id: "d5", name: "North Ring Road Hub", location: "North Ring Road" },
+];
+
 export function GlobalSearch() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -52,14 +82,16 @@ export function GlobalSearch() {
     });
 
     // Search depots
-    const depots = [...new Set(vehicles.map((v) => v.depot))];
-    depots.forEach((depot, index) => {
-      if (depot.toLowerCase().includes(searchTerm)) {
+    depotList.forEach((depot) => {
+      if (
+        depot.name.toLowerCase().includes(searchTerm) ||
+        depot.location.toLowerCase().includes(searchTerm)
+      ) {
         searchResults.push({
-          id: `depot-${index}`,
+          id: depot.id,
           type: "depot",
-          title: depot,
-          subtitle: `${vehicles.filter((v) => v.depot === depot).length} vehicles`,
+          title: depot.name,
+          subtitle: depot.location,
           path: "/depots",
         });
       }
@@ -67,12 +99,15 @@ export function GlobalSearch() {
 
     // Search alerts
     alerts.forEach((alert) => {
-      if (alert.message.toLowerCase().includes(searchTerm)) {
+      if (
+        alert.message.toLowerCase().includes(searchTerm) ||
+        alert.type.toLowerCase().includes(searchTerm)
+      ) {
         searchResults.push({
           id: alert.id,
           type: "alert",
           title: alert.message.slice(0, 50) + (alert.message.length > 50 ? "..." : ""),
-          subtitle: `${alert.type} • ${alert.time}`,
+          subtitle: `${alert.type.charAt(0).toUpperCase() + alert.type.slice(1)} • ${alert.time}`,
           path: "/",
         });
       }
@@ -80,7 +115,10 @@ export function GlobalSearch() {
 
     // Search charging hubs
     chargingHubs.forEach((hub) => {
-      if (hub.name.toLowerCase().includes(searchTerm)) {
+      if (
+        hub.name.toLowerCase().includes(searchTerm) ||
+        hub.power.toLowerCase().includes(searchTerm)
+      ) {
         searchResults.push({
           id: hub.id,
           type: "hub",
@@ -204,9 +242,11 @@ export function GlobalSearch() {
                         {getIcon(result.type)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">{result.title}</p>
+                        <p className="text-sm font-medium truncate">
+                          <HighlightText text={result.title} query={query} />
+                        </p>
                         <p className="text-xs text-muted-foreground truncate">
-                          {result.subtitle}
+                          <HighlightText text={result.subtitle} query={query} />
                         </p>
                       </div>
                       <span className="text-xs text-muted-foreground capitalize">
