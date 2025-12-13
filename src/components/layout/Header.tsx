@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, Search, User, Settings, LogOut, X } from "lucide-react";
+import { Menu, User, Settings, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,19 +8,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { GlobalSearch } from "./GlobalSearch";
 
 export function Header() {
   const navigate = useNavigate();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      // Navigate to search results or filter current view
-      console.log("Searching for:", searchQuery);
-    }
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -49,40 +38,7 @@ export function Header() {
         {/* Right: Search + User */}
         <div className="flex items-center gap-4">
           {/* Global Search */}
-          {searchOpen ? (
-            <form onSubmit={handleSearch} className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Search vehicles, depots, alerts..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64 pl-9 pr-8 h-9 bg-muted/50"
-                autoFocus
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchOpen(false);
-                  setSearchQuery("");
-                }}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </form>
-          ) : (
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground rounded-md hover:bg-muted/50 transition-colors"
-            >
-              <Search className="h-4 w-4" />
-              <span className="hidden md:inline">Search</span>
-              <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 text-xs text-muted-foreground">
-                ⌘K
-              </kbd>
-            </button>
-          )}
+          <GlobalSearch />
 
           {/* User Dropdown */}
           <DropdownMenu>
