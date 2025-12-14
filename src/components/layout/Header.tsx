@@ -10,10 +10,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { GlobalSearch } from "./GlobalSearch";
 import { useSidebarContext } from "@/contexts/SidebarContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Header() {
   const navigate = useNavigate();
   const { isExpanded, toggleSidebar } = useSidebarContext();
+  const { user, logout } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -53,20 +55,20 @@ export function Header() {
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                 <div className="text-right hidden sm:block">
-                  <p className="text-sm font-medium text-foreground">Alex Johnson</p>
-                  <p className="text-xs text-muted-foreground">Fleet Manager</p>
+                  <p className="text-sm font-medium text-foreground">{user?.name || 'User'}</p>
+                  <p className="text-xs text-muted-foreground capitalize">{user?.role || 'Guest'}</p>
                 </div>
                 <Avatar className="h-9 w-9 bg-info cursor-pointer">
                   <AvatarFallback className="bg-info text-info-foreground text-sm font-medium">
-                    AJ
+                    {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-lg">
               <div className="px-3 py-2 border-b border-border">
-                <p className="text-sm font-medium text-foreground">Alex Johnson</p>
-                <p className="text-xs text-muted-foreground">alex.johnson@company.com</p>
+                <p className="text-sm font-medium text-foreground">{user?.name || 'User'}</p>
+                <p className="text-xs text-muted-foreground">{user?.email || ''}</p>
               </div>
               <DropdownMenuItem 
                 onClick={() => navigate("/settings")}
@@ -83,7 +85,13 @@ export function Header() {
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
+              <DropdownMenuItem 
+                onClick={() => {
+                  logout();
+                  navigate('/login');
+                }}
+                className="cursor-pointer text-destructive focus:text-destructive"
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </DropdownMenuItem>

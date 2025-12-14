@@ -61,6 +61,13 @@ const clientSettings: ClientSettings = {
   timezone: 'Asia/Kolkata',
 };
 
+// Mock users for authentication
+const mockUsers = [
+  { id: 'u1', username: 'admin', password: 'admin123', email: 'admin@irisfleet.com', name: 'Admin User', role: 'admin' },
+  { id: 'u2', username: 'manager', password: 'manager123', email: 'manager@irisfleet.com', name: 'Fleet Manager', role: 'manager' },
+  { id: 'u3', username: 'operator', password: 'operator123', email: 'operator@irisfleet.com', name: 'Operator', role: 'operator' },
+];
+
 export function makeServer() {
   return createServer({
     models: {
@@ -178,6 +185,31 @@ export function makeServer() {
         const updates = JSON.parse(request.requestBody);
         Object.assign(clientSettings, updates);
         return { data: clientSettings, success: true };
+      });
+
+      // Authentication
+      this.post('/auth/login', (schema, request) => {
+        const { username, password } = JSON.parse(request.requestBody);
+        const user = mockUsers.find(u => u.username === username && u.password === password);
+        
+        if (user) {
+          const { password: _, ...userWithoutPassword } = user;
+          return { success: true, user: userWithoutPassword };
+        }
+        
+        return new Response(401, {}, { success: false, message: 'Invalid username or password' });
+      });
+
+      this.post('/auth/forgot-password', (schema, request) => {
+        const { email } = JSON.parse(request.requestBody);
+        const user = mockUsers.find(u => u.email === email);
+        
+        // Always return success for security (don't reveal if email exists)
+        return { success: true, message: 'If an account exists with this email, a reset link has been sent.' };
+      });
+
+      this.post('/auth/logout', () => {
+        return { success: true };
       });
     },
   });
