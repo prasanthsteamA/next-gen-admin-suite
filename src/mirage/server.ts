@@ -208,6 +208,14 @@ export function makeServer() {
         return { success: true, message: 'If an account exists with this email, a reset link has been sent.' };
       });
 
+      this.post('/auth/reset-password', (schema, request) => {
+        const { token, password } = JSON.parse(request.requestBody);
+        
+        // In a real app, validate the token and update the password
+        // For mock purposes, always succeed
+        return { success: true, message: 'Password has been reset successfully.' };
+      });
+
       this.post('/auth/logout', () => {
         return { success: true };
       });
