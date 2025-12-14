@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, User, Settings, LogOut } from "lucide-react";
+import { Menu, X, User, Settings, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -9,9 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { GlobalSearch } from "./GlobalSearch";
+import { useSidebarContext } from "@/contexts/SidebarContext";
 
 export function Header() {
   const navigate = useNavigate();
+  const { isExpanded, toggleSidebar } = useSidebarContext();
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -19,7 +21,13 @@ export function Header() {
       <div className="flex h-16 items-center justify-between border-b border-border bg-card px-4">
         {/* Left: Menu + Logo */}
         <div className="flex items-center gap-4">
-          <Menu className="h-6 w-6 text-muted-foreground cursor-pointer hover:text-foreground" />
+          <button
+            onClick={toggleSidebar}
+            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
+          >
+            {isExpanded ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
           <Link to="/" className="flex items-center gap-1">
             <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
               <span className="text-xs font-bold text-primary-foreground">bp</span>

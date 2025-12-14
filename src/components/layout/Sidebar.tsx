@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
@@ -9,9 +8,8 @@ import {
   Bus,
   BarChart3,
   Settings,
-  Menu,
-  X,
 } from "lucide-react";
+import { useSidebarContext } from "@/contexts/SidebarContext";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
@@ -25,25 +23,15 @@ const navItems = [
 
 export function Sidebar() {
   const location = useLocation();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { isExpanded } = useSidebarContext();
 
   return (
     <aside 
       className={cn(
-        "fixed left-0 top-16 z-40 h-[calc(100vh-64px)] bg-sidebar flex flex-col border-r border-sidebar-border transition-all duration-300",
+        "h-[calc(100vh-64px)] bg-sidebar flex flex-col border-r border-sidebar-border transition-all duration-300 flex-shrink-0",
         isExpanded ? "w-56" : "w-16"
       )}
     >
-      {/* Burger Toggle */}
-      <div className="flex items-center justify-center py-3 border-b border-sidebar-border">
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="p-2 rounded-lg text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors"
-          aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
-        >
-          {isExpanded ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-      </div>
 
       <nav className="flex-1 py-2 overflow-y-auto">
         <ul className="space-y-1 px-2">
