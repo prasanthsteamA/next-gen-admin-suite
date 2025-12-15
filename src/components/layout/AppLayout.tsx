@@ -13,14 +13,14 @@ interface AppLayoutProps {
 export function AppLayout({ children, breadcrumb }: AppLayoutProps) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="h-screen bg-background flex flex-col overflow-hidden">
         {/* Header spans full width at top */}
         <Header />
         
         {/* Below header: sidebar + main content */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 overflow-hidden">
           <Sidebar />
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 overflow-y-auto">
             {/* Breadcrumb bar - in page layout */}
             <div className="flex h-10 items-center bg-muted/50 border-b border-border px-6">
               <nav className="flex items-center gap-2 text-sm">
