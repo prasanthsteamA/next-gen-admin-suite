@@ -1,0 +1,166 @@
+service: iris-fleet-backend
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'ap-south-1'}
+  timeout: 30
+  memorySize: 512
+  
+  environment:
+    NODE_ENV: ${self:provider.stage}
+    DB_HOST: ${ssm:/iris-fleet/${self:provider.stage}/db/host}
+    DB_PORT: ${ssm:/iris-fleet/${self:provider.stage}/db/port}
+    DB_NAME: ${ssm:/iris-fleet/${self:provider.stage}/db/name}
+    DB_USER: ${ssm:/iris-fleet/${self:provider.stage}/db/user}
+    DB_PASSWORD: ${ssm:/iris-fleet/${self:provider.stage}/db/password}
+    JWT_SECRET: ${ssm:/iris-fleet/${self:provider.stage}/jwt/secret}
+    AWS_COGNITO_USER_POOL_ID: ${ssm:/iris-fleet/${self:provider.stage}/cognito/user-pool-id}
+    AWS_COGNITO_CLIENT_ID: ${ssm:/iris-fleet/${self:provider.stage}/cognito/client-id}
+    S3_BUCKET: ${ssm:/iris-fleet/${self:provider.stage}/s3/bucket}
+  
+  vpc:
+    securityGroupIds:
+      - ${ssm:/iris-fleet/${self:provider.stage}/vpc/security-group-id}
+    subnetIds:
+      - ${ssm:/iris-fleet/${self:provider.stage}/vpc/subnet-1}
+      - ${ssm:/iris-fleet/${self:provider.stage}/vpc/subnet-2}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - ssm:GetParameter
+            - ssm:GetParameters
+            - ssm:GetParametersByPath
+          Resource: 
+            - arn:aws:ssm:${self:provider.region}:*:parameter/iris-fleet/*
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+          Resource:
+            - arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminDeleteUser
+            - cognito-idp:AdminGetUser
+            - cognito-idp:AdminUpdateUserAttributes
+            - cognito-idp:AdminInitiateAuth
+          Resource:
+            - arn:aws:cognito-idp:${self:provider.region}:*:userpool/${self:provider.environment.AWS_COGNITO_USER_POOL_ID}
+        - Effect: Allow
+          Action:
+            - ses:SendEmail
+            - ses:SendRawEmail
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource: '*'
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+  - serverless-iam-roles-per-function
+  - serverless-prune-versions
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude: ['aws-sdk', 'pg-native']
+    target: 'node20'
+    platform: 'node'
+    concurrency: 10
+  
+  serverless-offline:
+    httpPort: 3001
+    lambdaPort: 3002
+    noPrependStageInUrl: true
+  
+  prune:
+    automatic: true
+    number: 3
+
+layers:
+  dependencies:
+    path: layer
+    name: ${self:service}-${self:provider.stage}-dependencies
+    description: Node modules for IRIS Fleet Backend
+    compatibleRuntimes:
+      - nodejs20.x
+    retain: false
+
+functions:
+  # Main API Function
+  api:
+    handler: src/index.handler
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: any
+      - httpApi:
+          path: /
+          method: any
+    layers:
+      - !Ref DependenciesLambdaLayer
+
+  # Authorizer Function
+  authorizer:
+    handler: src/auth/authorizer.handler
+    
+  # Scheduled Functions
+  dailyReportJob:
+    handler: src/scheduledJobs/dailyReport.handler
+    events:
+      - schedule:
+          rate: cron(0 6 * * ? *)
+          enabled: true
+    timeout: 300
+
+  chargingSessionCleanup:
+    handler: src/scheduledJobs/sessionCleanup.handler
+    events:
+      - schedule:
+          rate: cron(0 0 * * ? *)
+          enabled: true
+    timeout: 300
+
+  alertNotificationJob:
+    handler: src/scheduledJobs/alertNotification.handler
+    events:
+      - schedule:
+          rate: rate(5 minutes)
+          enabled: true
+    timeout: 60
+
+  socUpdateJob:
+    handler: src/scheduledJobs/socUpdate.handler
+    events:
+      - schedule:
+          rate: rate(1 minute)
+          enabled: true
+    timeout: 60
+
+package:
+  individually: true
+  patterns:
+    - '!node_modules/**'
+    - '!layer/**'
+    - '!.git/**'
+    - '!.serverless/**'
+    - '!dist/**'
+    - '!coverage/**'
+    - '!tests/**'
